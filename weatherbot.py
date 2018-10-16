@@ -2,13 +2,14 @@
 # A twitter bot that interacts with the weather underground and twitter apis to tweet regularly about weather conditions from various locations around
 # Washington State.
 
-import tweepy
+import os, tweepy, random, time
+
+from dotenv import load_dotenv
 from json import loads
 from urllib.request import urlopen
-import random
-import time
-import classifiedInfo
 from locations import locations
+
+load_dotenv()
 
 
 # these methods fetch json data from the wunderground api
@@ -148,7 +149,7 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
     
     for city in cities:
-        time.sleep(60)
+        time.sleep(20)
         current_data = get_current_data(city)
         forecast_data = get_forecast(city)
         

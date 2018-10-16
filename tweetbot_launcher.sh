@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python3 *****FILE PATH******
+python3 /Users/kris/Desktop/projects/weatherbot/weatherbot.py
