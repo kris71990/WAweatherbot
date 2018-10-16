@@ -136,5 +136,6 @@ pip-selfcheck.json
 !.vscode/extensions.json
 
 weatherbotautomator.app/
+*.sh
 
 # End of https://www.gitignore.io/api/python,visualstudiocode
