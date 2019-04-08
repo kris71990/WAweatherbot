@@ -11,7 +11,7 @@ load_dotenv()
 
 # these methods fetch json data from the wunderground api
 def get_current_data(location):
-  url = 'http://api.wunderground.com/api/' + os.getenv('WU_API_KEY') + '/conditions/q/' + location + '.json'
+  url = 'https://api.weather.gov/points/' + location
   res = requests.get(url)
   res.raise_for_status()
   return res.json()
@@ -43,31 +43,35 @@ if __name__ == '__main__':
   auth.set_access_token(os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
   api = tweepy.API(auth)
   
-  cities = getCities()
+  # cities = getCities()
+  cities = locations
 
   for city in cities:
     time.sleep(10)
     current_data = get_current_data(city)
-    forecast_data = get_forecast(city)
+    # forecast_data = get_forecast(city)
 
-    current_conditions = current_data['current_observation']['weather']
-    current_temp = current_data['current_observation']['temperature_string']
-    current_humidity = current_data['current_observation']['relative_humidity']
-    forecast = forecast_data['forecast']['txt_forecast']['forecastday'][0]['fcttext']
-    forecast_url = current_data['current_observation']['forecast_url']
+    print(current_data)
+    # print(forecast_data)
+
+    # current_conditions = current_data['current_observation']['weather']
+    # current_temp = current_data['current_observation']['temperature_string']
+    # current_humidity = current_data['current_observation']['relative_humidity']
+    # forecast = forecast_data['forecast']['txt_forecast']['forecastday'][0]['fcttext']
+    # forecast_url = current_data['current_observation']['forecast_url']
   
-    if city.startswith('pws'):
-      location = current_data['current_observation']['observation_location']['city']
-    else:
-      location = current_data['current_observation']['display_location']['city']
+    # if city.startswith('pws'):
+    #   location = current_data['current_observation']['observation_location']['city']
+    # else:
+    #   location = current_data['current_observation']['display_location']['city']
 
 
-    status = '%s: Currently %s with a temperature of %s, and a relative humidity of %s. Today\'s forecast: %s %s' % (location, current_conditions, current_temp, current_humidity, forecast, forecast_url)
+    # status = '%s: Currently %s with a temperature of %s, and a relative humidity of %s. Today\'s forecast: %s %s' % (location, current_conditions, current_temp, current_humidity, forecast, forecast_url)
 
-    try:
-      api.update_status(status)
-    except tweepy.TweepError:
-      pass
+    # try:
+    #   api.update_status(status)
+    # except tweepy.TweepError:
+    #   pass
     
-    print(status)
+    # print(status)
 
