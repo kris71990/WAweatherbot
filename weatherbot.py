@@ -1,6 +1,5 @@
 # weatherbot.py
-# A twitter bot that interacts with the weather underground and twitter apis to tweet regularly about weather conditions from various locations around
-# Washington State.
+# A twitter bot that interacts with the weather.gov and twitter APIs to tweet regularly about weather conditions from various locations across Washington State.
 
 import os, twitter, random, time, requests
 from dotenv import load_dotenv
@@ -22,7 +21,8 @@ def get_forecast(cityCoordinates):
   return { 'city': location, 'data': resForecast.json() }
 
 
-# generates random numbers and determines locations to tweet about based on the random numbers
+# generates random numbers to choose which cities to tweet about
+# returns list of cities
 def getCities():
   locales = list(locations.keys())
   cities = []
@@ -36,8 +36,7 @@ def getCities():
   return cities
 
 
-# connect with twitter api, loop through tweet locations in list generated above and create a status for each
-# post tweet, wait a given time until posting the next tweet
+# connect with twitter api, call get_forecast function and tweet forecast for each location in cities list
 if __name__ == '__main__':
   twitterConnection = twitter.Api(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'), os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
   
@@ -54,8 +53,13 @@ if __name__ == '__main__':
     currentConditions = forecast['properties']['periods'][0]
     forecast = forecast['properties']['periods'][1]
 
+    if not currentConditions['temperatureTrend']:
+      tempTrendText = 'Temperature stable'
+    else: 
+      tempTrendText = 'Temperature ' + currentConditions['temperatureTrend']
+
     statusFull = '%s: %sF - %s' % (city, currentConditions['temperature'], currentConditions['detailedForecast'])
-    statusShort = '%s: %sF - %s %s: %s.' % (city, currentConditions['temperature'], currentConditions['shortForecast'], forecast['name'], forecast['shortForecast'])
+    statusShort = '%s: %sF - %s, winds %s at %s. %s. %s - %s; winds %s at %s.' % (city, currentConditions['temperature'], currentConditions['shortForecast'], currentConditions['windDirection'], currentConditions['windSpeed'], tempTrendText, forecast['name'], forecast['shortForecast'], forecast['windDirection'], forecast['windSpeed'])
 
     try:
       if len(statusFull) <= 280:
@@ -64,6 +68,8 @@ if __name__ == '__main__':
       else:
         print(statusShort)
         twitterConnection.PostUpdate(statusShort)
-    except twitter.error.TwitterError:
-      print('Error - Tweet unable to post')
+    except twitter.error.TwitterError as err:
+      print(err.message())
+
+  print('Done')
 
