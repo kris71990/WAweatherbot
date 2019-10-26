@@ -69,7 +69,7 @@ if __name__ == '__main__':
         print(statusShort)
         twitterConnection.PostUpdate(statusShort)
     except twitter.error.TwitterError as err:
-      print(err.message())
+      pass
 
   print('Done')
 
